@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string smallestWindow(string s, string p) {
+        if (p.size() > s.size()) return "";
+
+        // frequency map of pattern
+        vector<int> need(26, 0), have(26, 0);
+        int required = 0;  // total chars needed (with duplicates)
+
+        for (char c : p) {
+            if (need[c - 'a'] == 0) required++; // count unique needed
+            need[c - 'a']++;
+        }
+
+        int formed = 0; // unique chars satisfied
+        int left = 0, right = 0;
+        int minLen = INT_MAX, start = 0;
+
+        while (right < (int)s.size()) {
+            char c = s[right];
+            have[c - 'a']++;
+
+            if (need[c - 'a'] > 0 && have[c - 'a'] == need[c - 'a'])
+                formed++;
+
+            // shrink from left
+            while (left <= right && formed == required) {
+                if (right - left + 1 < minLen) {
+                    minLen = right - left + 1;
+                    start = left;
+                }
+                char lc = s[left];
+                have[lc - 'a']--;
+                if (need[lc - 'a'] > 0 && have[lc - 'a'] < need[lc - 'a'])
+                    formed--;
+                left++;
+            }
+            right++;
+        }
+
+        return (minLen == INT_MAX) ? "" : s.substr(start, minLen);
+    }
+};
