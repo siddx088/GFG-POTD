@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int maxOnes(vector<int>& arr, int k) {
+        int n = arr.size();
+        int left = 0, zeros = 0, maxLen = 0;
+
+        for (int right = 0; right < n; right++) {
+            if (arr[right] == 0) zeros++;
+
+            // shrink window until zeros ≤ k
+            while (zeros > k) {
+                if (arr[left] == 0) zeros--;
+                left++;
+            }
+
+            maxLen = max(maxLen, right - left + 1);
+        }
+
+        return maxLen;
+    }
+};
